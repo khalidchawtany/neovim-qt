@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <QCloseEvent>
+#include <QDebug>
 
 namespace NeovimQt {
 
@@ -19,6 +20,9 @@ MainWindow::MainWindow(NeovimConnector *c, QWidget *parent)
 
 void MainWindow::init(NeovimConnector *c)
 {
+  //setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    is_frameless = false;
+
 	if (m_shell) {
 		m_shell->deleteLater();
 		m_stack.removeWidget(m_shell);
@@ -43,6 +47,8 @@ void MainWindow::init(NeovimConnector *c)
 			this, &MainWindow::neovimFullScreen);
 	connect(m_shell, &Shell::neovimGuiCloseRequest,
 			this, &MainWindow::neovimGuiCloseRequest);
+	connect(m_shell, &Shell::neovimFrameless,
+			this, &MainWindow::neovimFrameless);
 	connect(m_nvim, &NeovimConnector::processExited,
 			this, &MainWindow::neovimExited);
 	connect(m_nvim, &NeovimConnector::error,
@@ -118,20 +124,56 @@ void MainWindow::neovimWidgetResized()
 
 void MainWindow::neovimMaximized(bool set)
 {
-	if (set) {
-		setWindowState(windowState() | Qt::WindowMaximized);
-	} else {
-		setWindowState(windowState() & ~Qt::WindowMaximized);
-	}
+
+  //If the window is in full-screen don't edit
+  if (!(windowState() & Qt::WindowFullScreen)) {
+    if (set) {
+      setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+      is_frameless=true;
+      show();
+      setWindowState(windowState() | Qt::WindowMaximized);
+    } else {
+      setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
+      is_frameless=false;
+      show();
+      setWindowState(windowState() & ~Qt::WindowMaximized);
+    }
+  }
 }
 
 void MainWindow::neovimFullScreen(bool set)
 {
 	if (set) {
+    //First unset the framelss then fullscreen
+    if(is_frameless){
+      setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
+    }
+
 		setWindowState(windowState() | Qt::WindowFullScreen);
 	} else {
+
 		setWindowState(windowState() & ~Qt::WindowFullScreen);
+
+    if(is_frameless){
+      setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    }
 	}
+  show();
+}
+
+void MainWindow::neovimFrameless(bool set)
+{
+  QSize w_size = geometry().size();
+
+  if (set) {
+    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    w_size.setHeight(w_size.height() + 22);
+  } else {
+    setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
+    w_size.setHeight(w_size.height() - 22);
+  }
+  resize(w_size);
+  show();
 }
 
 void MainWindow::neovimGuiCloseRequest()
