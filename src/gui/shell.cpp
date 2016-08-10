@@ -532,6 +532,15 @@ void Shell::handleNeovimNotification(const QByteArray &name, const QVariantList&
 			} else {
 				emit neovimFullScreen(variant_not_zero(args.at(1)));
 			}
+		} else if (guiEvName == "WindowFrameless" && args.size() == 2) {
+			if (isWindow()) {
+				setWindowFlags(variant_not_zero(args.at(1)) ?
+					windowFlags() | Qt::FramelessWindowHint :
+					windowFlags() & ~Qt::FramelessWindowHint);
+        show();
+			} else {
+				emit neovimFrameless(variant_not_zero(args.at(1)));
+			}
 		} else if (guiEvName == "Linespace" && args.size() == 2) {
 			auto val = args.at(1).toUInt();
 			setLineSpace(val);

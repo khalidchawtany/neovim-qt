@@ -49,6 +49,7 @@ signals:
 	void neovimMaximized(bool);
 	void neovimFullScreen(bool);
 	void neovimGuiCloseRequest();
+	void neovimFrameless(bool);
 	/// This signal is emmited if the running neovim version is unsupported by the GUI
 	void neovimIsUnsupported();
 	/// The tabline needs updating. curtab is the handle of the current tab (not its index)

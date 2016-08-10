@@ -37,6 +37,7 @@ private slots:
 	void neovimMaximized(bool);
 	void neovimFullScreen(bool);
 	void neovimGuiCloseRequest();
+	void neovimFrameless(bool);
 	void neovimExited(int status);
 	void neovimError(NeovimConnector::NeovimError);
 	void reconnectNeovim();
@@ -54,6 +55,7 @@ private:
 	QStackedWidget m_stack;
 	QTabBar *m_tabline;
 	QToolBar *m_tabline_bar;
+  bool is_frameless;
 };
 
 } // Namespace
