@@ -684,6 +684,15 @@ void Shell::handleNeovimNotification(const QByteArray &name, const QVariantList&
 			} else {
 				emit neovimFullScreen(variant_not_zero(args.at(1)));
 			}
+		} else if (guiEvName == "WindowFrameless" && args.size() == 2) {
+			if (isWindow()) {
+				setWindowFlags(variant_not_zero(args.at(1)) ?
+					windowFlags() | Qt::FramelessWindowHint :
+					windowFlags() & ~Qt::FramelessWindowHint);
+        show();
+			} else {
+				emit neovimFrameless(variant_not_zero(args.at(1)));
+			}
 		} else if (guiEvName == "Linespace" && args.size() == 2) {
 			// The conversion to string and then to int happens because of http://doc.qt.io/qt-5/qvariant.html#toUInt
 			// toUint() fails to detect an overflow i.e. it converts to ulonglong and then returns a MAX UINT
