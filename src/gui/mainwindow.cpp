@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "frameless.h"
 
 #include <QCloseEvent>
 #include <QDebug>
@@ -10,6 +11,7 @@ MainWindow::MainWindow(NeovimConnector *c, QWidget *parent)
 	m_delayedShow(DelayedShow::Disabled)
 {
 	m_errorWidget = new ErrorWidget();
+  FrameLess *frameless = new FrameLess(this);
 	m_stack.addWidget(m_errorWidget);
 	connect(m_errorWidget, &ErrorWidget::reconnectNeovim,
 			this, &MainWindow::reconnectNeovim);
