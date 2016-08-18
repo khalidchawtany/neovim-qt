@@ -116,6 +116,8 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 
 		// end_col/row is inclusive
 		for (int i=start_row; i<=end_row && i < m_contents.rows(); i++) {
+			//Process chars in reverse order
+			//for (int j=end_col; j>=start_col ; j--) { 
 			for (int j=start_col; j<=end_col && j < m_contents.columns();
 					j++) {
 
@@ -127,7 +129,26 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 					// Only paint bg/fg if this is not the second cell
 					// of a wide char
 					if (cell.backgroundColor.isValid()) {
-						p.fillRect(r, cell.backgroundColor);
+						if(cell.italic) {
+
+						QFontMetrics fm(p.font());
+						int lb = fm.leftBearing(cell.c);
+						int rb = fm.rightBearing(cell.c);
+
+						// j-1 works, as this is not the fitst cell
+						const Cell& pcell = m_contents.constValue(i,j-1);
+						int plb = fm.leftBearing(pcell.c);
+						int prb = fm.rightBearing(pcell.c);
+
+						rb = rb<0?abs(rb): 0;
+						lb = lb<0?abs(lb): 0;
+						prb = prb<0?abs(prb): 0;
+						plb = plb<0?abs(plb): 0;
+
+						p.fillRect(r.adjusted(prb,0,rb,0), cell.backgroundColor);
+						} else {
+							p.fillRect(r, cell.backgroundColor);
+						}
 					} else {
 						p.fillRect(r, m_bgColor);
 					}
@@ -152,7 +173,29 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 					}
 
 					// Draw chars at the baseline
-					QPoint pos(r.left(), r.top()+m_ascent+m_lineSpace);
+					QPoint pos;
+					int displacement = 0;
+#if 0
+					// Only if italics and not the first cell
+					if(cell.italic && j != start_col) {
+						QFontMetrics fm(p.font());
+						int lb = fm.leftBearing(cell.c);
+						int rb = fm.rightBearing(cell.c);
+
+						// j-1 works, as this is not the fitst cell
+						const Cell& pcell = m_contents.constValue(i,j-1);
+						int plb = fm.leftBearing(pcell.c);
+						int prb = fm.rightBearing(pcell.c);
+
+						// Prev characeter does not have any rightBearing. Current character
+						// dos not have any leftBearing. We can move current char to the 
+						// left (by the amount of rb) without colliding into it
+						if(prb >= 0 && lb < 0) {
+							displacement = rb;
+						}
+					} 
+#endif
+					pos = QPoint(r.left()+displacement , r.top()+m_ascent+m_lineSpace);
 					p.drawText(pos, QString(cell.c));
 				}
 
@@ -196,7 +239,7 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 		p.fillRect(margin, m_bgColor);
 	}
 
-#if 0
+#if 1
 	// Draw DEBUG rulers
 	for (int i=m_cellSize.width(); i<width(); i+=m_cellSize.width()) {
 		p.setPen(QPen(Qt::red, 1,  Qt::DashLine));

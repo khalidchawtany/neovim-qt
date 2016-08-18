@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 	app.setApplicationDisplayName("Neovim");
 	app.setWindowIcon(QIcon(":/neovim.png"));
 
+	//qputenv("NVIM_QT_LOG", "/Volumes/Home/Desktop/qtlog.txt");
 	if (!qgetenv("NVIM_QT_LOG").isEmpty()) {
 		qInstallMessageHandler(logger);
 	}
