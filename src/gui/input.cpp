@@ -206,9 +206,6 @@ QString InputConv::convertKey(const QString& text, int k, Qt::KeyboardModifiers 
 			return QString("<%1k9>").arg(modPrefix(mod));
 		}
     }
-  //if (text == "<" || k == Qt::Key_Less) {
-    //mod &= ~ShiftModifier;
-  //}
 
 	if (specialKeys.contains(k)) {
 		return QString("<%1%2>").arg(modPrefix(mod)).arg(specialKeys.value(k));
@@ -252,9 +249,12 @@ QString InputConv::convertKey(const QString& text, int k, Qt::KeyboardModifiers 
 
 	// Format with prefix if necessary
 	QString prefix = modPrefix(mod);
-	if (!prefix.isEmpty()) {
-		return QString("<%1%2>").arg(prefix).arg(c);
-	}
+  if (!prefix.isEmpty() ) {
+    if(text.isEmpty()) {
+      return QString("<%1%2>").arg(prefix).arg(c);
+    }
+    return text;
+  }
 
 	return QString(c);
 }
