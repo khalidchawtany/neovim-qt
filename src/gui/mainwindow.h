@@ -64,6 +64,7 @@ private:
 	QToolBar *m_tabline_bar;
 	ShellOptions m_shell_options;
 	bool m_neovim_requested_close;
+  bool is_frameless;
 };
 
 } // Namespace
