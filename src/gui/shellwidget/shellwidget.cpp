@@ -21,8 +21,11 @@ ShellWidget::ShellWidget(QWidget *parent)
 ShellWidget* ShellWidget::fromFile(const QString& path)
 {
 	ShellWidget *w = new ShellWidget();
-	w->m_contents.fromFile(path);
-	return w;
+	if (w->m_contents.fromFile(path)) {
+		return w;
+	} else {
+		return NULL;
+	}
 }
 
 void ShellWidget::setDefaultFont()
