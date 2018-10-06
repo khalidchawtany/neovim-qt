@@ -15,6 +15,7 @@ class ShellWidget: public QWidget
 	Q_PROPERTY(int rows READ rows)
 	Q_PROPERTY(int columns READ columns)
 	Q_PROPERTY(QSize cellSize READ cellSize)
+	Q_PROPERTY(bool ligatureMode READ ligatureMode WRITE setLigatureMode)
 public:
 	ShellWidget(QWidget *parent=0);
 	bool setShellFont(const QString& family, qreal ptSize, int weight = -1, bool italic = false, bool force = false);
@@ -31,6 +32,7 @@ public:
 	QSize cellSize() const;
 	const ShellContents& contents() const;
 	QSize sizeHint() const Q_DECL_OVERRIDE;
+	bool ligatureMode() const;
 signals:
 	void shellFontChanged();
 	void fontError(const QString& msg);
@@ -51,6 +53,7 @@ public slots:
 	void scrollShellRegion(int row0, int row1, int col0,
 			int col1, int rows);
 	void setLineSpace(int height);
+  void setLigatureMode(bool ligatureMode);
 protected:
 	virtual void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
 	virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
@@ -66,6 +69,7 @@ private:
 	int m_ascent;
 	QColor m_bgColor, m_fgColor, m_spColor;
 	int m_lineSpace;
+  bool m_ligatureMode;
 };
 
 #endif

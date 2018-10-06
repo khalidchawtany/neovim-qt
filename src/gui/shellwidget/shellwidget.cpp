@@ -6,7 +6,8 @@
 
 ShellWidget::ShellWidget(QWidget *parent)
 :QWidget(parent), m_contents(0,0), m_bgColor(Qt::white),
-	m_fgColor(Qt::black), m_spColor(QColor()), m_lineSpace(0)
+ m_fgColor(Qt::black), m_spColor(QColor()), m_lineSpace(0),
+ m_ligatureMode(false)
 {
 	setAttribute(Qt::WA_OpaquePaintEvent);
 	setAttribute(Qt::WA_KeyCompression, false);
@@ -110,16 +111,26 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 	foreach(QRect rect, ev->region().rects()) {
 		int start_row = rect.top() / m_cellSize.height();
 		int end_row = rect.bottom() / m_cellSize.height();
+		int start_col = rect.left() / m_cellSize.width();
+		int end_col = rect.right() / m_cellSize.width();
 
 		// Paint margins
+		if (end_col > m_contents.columns()) {
+			end_col = m_contents.columns();
+		}
 		if (end_row > m_contents.rows()) {
 			end_row = m_contents.rows();
 		}
 
+	if(m_ligatureMode){
+		start_col = 0;
+		end_col = m_contents.columns();
+	}
+
 		// end_row is inclusive
 		QChar *rowStr = new QChar[m_contents.columns()];
 		for (int i=start_row; i<=end_row && i < m_contents.rows(); i++) {
-			for (int j=0;j < m_contents.columns();) {
+			for (int j=start_col; j<=end_col && j < m_contents.columns();) {
 				const Cell& firstCell = m_contents.constValue(i,j);
 				const QColor &currentForeground = firstCell.foregroundColor.isValid()?firstCell.foregroundColor:m_fgColor;
 				const QColor &currentBackground = firstCell.backgroundColor.isValid()?firstCell.backgroundColor:m_bgColor;
@@ -170,7 +181,8 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 					cell = &m_contents.constValue(i,j);
 					nextForeground = &(cell->foregroundColor.isValid()?cell->foregroundColor:m_fgColor);
 					nextBackground = &(cell->backgroundColor.isValid()?cell->backgroundColor:m_bgColor);
-				} while (!(cell->bold!=firstCell.bold || cell->italic!=firstCell.italic ||
+				} while ( m_ligatureMode &&
+						!(cell->bold!=firstCell.bold || cell->italic!=firstCell.italic ||
 						currentForeground != *nextForeground ||
 						currentBackground != *nextBackground ||
 						m_contents.constValue(i,j-1).doubleWidth ||
@@ -289,7 +301,9 @@ int ShellWidget::put(const QString& text, int row, int column,
 	int cols_changed = m_contents.put(text, row, column, fg, bg, sp,
 				bold, italic, underline, undercurl);
 	if (cols_changed > 0) {
-		QRect rect = absoluteShellRect(row, 0, 1, m_contents.columns());
+	int rectWidth = m_ligatureMode?m_contents.columns():cols_changed;
+	int rectStart = m_ligatureMode?0:column;
+		QRect rect = absoluteShellRect(row, rectStart, 1, rectWidth);
 		update(rect);
 	}
 	return cols_changed;
@@ -361,4 +375,14 @@ int ShellWidget::rows() const
 int ShellWidget::columns() const
 {
 	return m_contents.columns();
+}
+
+void ShellWidget::setLigatureMode(bool ligatureMode)
+{
+	m_ligatureMode = ligatureMode;
+}
+
+bool ShellWidget::ligatureMode() const
+{
+	return m_ligatureMode;
 }
