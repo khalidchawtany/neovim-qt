@@ -6,11 +6,11 @@ endif ()
 
 function(add_xtest SOURCE_NAME)
 	add_executable(${SOURCE_NAME} ${SOURCE_NAME}.cpp)
-	file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR} TEST_SOURCE_DIR)
 	target_link_libraries(${SOURCE_NAME} Qt5::Widgets Qt5::Test qshellwidget)
 	add_test(NAME ${SOURCE_NAME} COMMAND ${SOURCE_NAME})
 endfunction()
 
+file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR} TEST_SOURCE_DIR)
 add_definitions(-DTEST_SOURCE_DIR="${TEST_SOURCE_DIR}")
 
 add_xtest(test_cell)
