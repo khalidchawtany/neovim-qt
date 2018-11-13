@@ -3,6 +3,8 @@
 #include <QCloseEvent>
 #include <QToolBar>
 #include <QLayout>
+#include <QSizeGrip>
+#include <QVBoxLayout>
 
 namespace NeovimQt {
 
@@ -13,15 +15,17 @@ MainWindow::MainWindow(NeovimConnector *c, ShellOptions opts, QWidget *parent)
 {
 	m_errorWidget = new ErrorWidget();
 
-
+  QSizeGrip * sizeGrip = new QSizeGrip(this);
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->addWidget(&m_stack, 0, Qt::AlignLeft | Qt::AlignTop);
+  layout->addWidget(sizeGrip, 1, Qt::AlignRight | Qt::AlignBottom);
 	m_stack.addWidget(m_errorWidget);
-
-
-
+	setCentralWidget(&m_stack);
+  this->setLayout(layout);
 
 	connect(m_errorWidget, &ErrorWidget::reconnectNeovim,
 			this, &MainWindow::reconnectNeovim);
-	setCentralWidget(&m_stack);
 
 	init(c);
 }
