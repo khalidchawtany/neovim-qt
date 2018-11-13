@@ -5,6 +5,9 @@
 #include <QFileInfo>
 #include <QDir>
 #include "mainwindow.h"
+#include "frameless.h"
+#include <QSizeGrip>
+#include <QGridLayout>
 
 namespace NeovimQt {
 
@@ -103,6 +106,9 @@ void App::showUi(NeovimConnector *c, const QCommandLineParser& parser)
 	}
 #else
 	NeovimQt::MainWindow *win = new NeovimQt::MainWindow(c, opts);
+  FrameLess *frameless = new FrameLess(win);
+  QSizeGrip * sizeGrip = new QSizeGrip(win);
+	sizeGrip->setParent(win);
 
 	QObject::connect(instance(), SIGNAL(openFilesTriggered(const QList<QUrl>)),
 		win->shell(), SLOT(openFiles(const QList<QUrl>)));
