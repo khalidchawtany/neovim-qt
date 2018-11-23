@@ -10,7 +10,7 @@ function(add_xtest SOURCE_NAME)
 	add_test(NAME ${SOURCE_NAME} COMMAND ${SOURCE_NAME})
 endfunction()
 
-file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR} TEST_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR} TEST_SOURCE_DIR)
 add_definitions(-DTEST_SOURCE_DIR="${TEST_SOURCE_DIR}")
 
 add_xtest(test_cell)
