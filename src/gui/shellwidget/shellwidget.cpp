@@ -379,6 +379,7 @@ int ShellWidget::columns() const
 void ShellWidget::setLigatureMode(bool ligatureMode)
 {
 	m_ligatureMode = ligatureMode;
+	update();
 }
 
 bool ShellWidget::ligatureMode() const
