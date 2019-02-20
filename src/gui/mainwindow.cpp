@@ -214,11 +214,15 @@ void MainWindow::neovimFrameless(bool set)
 
 #ifdef __APPLE__
       //Then, hide the OS X title bar
-      OSXHideTitleBar::HideTitleBar(this->winId());
+      OSXHideTitleBar::HideTitleBar(this->winId(), true);
 #endif
     /* setWindowFlags(windowFlags() | Qt::FramelessWindowHint); */
     w_size.setHeight(w_size.height() + 22);
   } else {
+#ifdef __APPLE__
+      //Then, hide the OS X title bar
+      OSXHideTitleBar::HideTitleBar(this->winId(), false);
+#endif
     /* setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint); */
     w_size.setHeight(w_size.height() - 22);
   }

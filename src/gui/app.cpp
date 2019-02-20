@@ -101,7 +101,7 @@ void App::showUi(NeovimConnector *c, const QCommandLineParser& parser)
 #ifdef __APPLE__
 
     //Then, hide the OS X title bar
-    OSXHideTitleBar::HideTitleBar(win->winId());
+    OSXHideTitleBar::HideTitleBar(win->winId(), true);
 
 #endif
 
@@ -120,7 +120,7 @@ void App::showUi(NeovimConnector *c, const QCommandLineParser& parser)
 #ifdef __APPLE__
 
   //Then, hide the OS X title bar
-  OSXHideTitleBar::HideTitleBar(win->winId());
+  OSXHideTitleBar::HideTitleBar(win->winId(), true);
 
 #endif
 

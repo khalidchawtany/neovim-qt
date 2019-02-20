@@ -1,21 +1,38 @@
 #include "OSXHideTitleBar.h"
 #include <Cocoa/Cocoa.h>
 
-void OSXHideTitleBar::HideTitleBar(long winid)
+void OSXHideTitleBar::HideTitleBar(long winid, bool toggle)
 {
     NSView *nativeView = reinterpret_cast<NSView *>(winid);
     NSWindow* nativeWindow = [nativeView window];
 
-    [nativeWindow setStyleMask:
-        [nativeWindow styleMask] | NSFullSizeContentViewWindowMask | NSWindowTitleHidden];
+    if(toggle) {
+        [nativeWindow setStyleMask:
+            [nativeWindow styleMask] | NSFullSizeContentViewWindowMask | NSWindowTitleHidden];
 
-    [nativeWindow setTitlebarAppearsTransparent:YES];
-    [nativeWindow setMovableByWindowBackground:YES];
+        [nativeWindow setTitlebarAppearsTransparent:YES];
+        [nativeWindow setMovableByWindowBackground:YES];
 
-    NSButton *closeButton = [nativeWindow standardWindowButton:NSWindowCloseButton];
-    NSButton *minButton = [nativeWindow standardWindowButton:NSWindowMiniaturizeButton];
-    NSButton *zoomButton = [nativeWindow standardWindowButton:NSWindowZoomButton];
-    [closeButton setHidden:YES];
-    [minButton setHidden:YES];
-    [zoomButton setHidden:YES];
+        NSButton *closeButton = [nativeWindow standardWindowButton:NSWindowCloseButton];
+        NSButton *minButton = [nativeWindow standardWindowButton:NSWindowMiniaturizeButton];
+        NSButton *zoomButton = [nativeWindow standardWindowButton:NSWindowZoomButton];
+        [closeButton setHidden:YES];
+        [minButton setHidden:YES];
+        [zoomButton setHidden:YES];
+    } else {
+        [nativeWindow setStyleMask:
+            [nativeWindow styleMask]];
+
+        [nativeWindow setTitlebarAppearsTransparent:false];
+        [nativeWindow setMovableByWindowBackground:false];
+
+        NSButton *closeButton = [nativeWindow standardWindowButton:NSWindowCloseButton];
+        NSButton *minButton = [nativeWindow standardWindowButton:NSWindowMiniaturizeButton];
+        NSButton *zoomButton = [nativeWindow standardWindowButton:NSWindowZoomButton];
+        [closeButton setHidden:false];
+        [minButton setHidden:false];
+        [zoomButton setHidden:false];
+
+    }
+
 }
