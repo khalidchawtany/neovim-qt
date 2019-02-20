@@ -12,4 +12,10 @@ void OSXHideTitleBar::HideTitleBar(long winid)
     [nativeWindow setTitlebarAppearsTransparent:YES];
     [nativeWindow setMovableByWindowBackground:YES];
 
+    NSButton *closeButton = [nativeWindow standardWindowButton:NSWindowCloseButton];
+    NSButton *minButton = [nativeWindow standardWindowButton:NSWindowMiniaturizeButton];
+    NSButton *zoomButton = [nativeWindow standardWindowButton:NSWindowZoomButton];
+    [closeButton setHidden:YES];
+    [minButton setHidden:YES];
+    [zoomButton setHidden:YES];
 }
