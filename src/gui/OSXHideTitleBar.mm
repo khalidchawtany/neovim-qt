@@ -10,6 +10,6 @@ void OSXHideTitleBar::HideTitleBar(long winid)
         [nativeWindow styleMask] | NSFullSizeContentViewWindowMask | NSWindowTitleHidden];
 
     [nativeWindow setTitlebarAppearsTransparent:YES];
-    //[nativeWindow setMovableByWindowBackground:YES];
+    [nativeWindow setMovableByWindowBackground:YES];
 
 }
