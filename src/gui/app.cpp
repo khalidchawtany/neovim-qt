@@ -5,6 +5,10 @@
 #include <QFileInfo>
 #include <QDir>
 #include "mainwindow.h"
+#ifdef __APPLE__
+#include "OSXHideTitleBar.h"
+#endif
+
 
 namespace NeovimQt {
 
@@ -93,6 +97,14 @@ void App::showUi(NeovimConnector *c, const QCommandLineParser& parser)
 
 #ifdef NEOVIMQT_GUI_WIDGET
 	NeovimQt::Shell *win = new NeovimQt::Shell(c);
+
+#ifdef __APPLE__
+
+    //Then, hide the OS X title bar
+    OSXHideTitleBar::HideTitleBar(win->winId());
+
+#endif
+
 	win->show();
 	if (parser.isSet("fullscreen")) {
 		win->showFullScreen();
@@ -103,6 +115,14 @@ void App::showUi(NeovimConnector *c, const QCommandLineParser& parser)
 	}
 #else
 	NeovimQt::MainWindow *win = new NeovimQt::MainWindow(c, opts);
+
+
+#ifdef __APPLE__
+
+  //Then, hide the OS X title bar
+  OSXHideTitleBar::HideTitleBar(win->winId());
+
+#endif
 
 	QObject::connect(instance(), SIGNAL(openFilesTriggered(const QList<QUrl>)),
 		win->shell(), SLOT(openFiles(const QList<QUrl>)));
