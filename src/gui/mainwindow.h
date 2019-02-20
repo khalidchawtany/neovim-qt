@@ -22,14 +22,7 @@ public:
 		Maximized,
 		FullScreen,
 	};
-  //If you want to have Max/Min/Close buttons, look at how QWinWidget uses these 
-  QPushButton* maximizeButton = nullptr;
-  QPushButton* minimizeButton = nullptr;
-  QPushButton* closeButton = nullptr;
 
-  //If you want to enable dragging the window when the mouse is over top of, say, a QToolBar, 
-  //then look at how QWinWidget uses this
-  QToolBar* toolBar = nullptr;
 	MainWindow(NeovimConnector *, ShellOptions opts, QWidget *parent=0);
 	bool neovimAttached() const;
 	Shell* shell();
