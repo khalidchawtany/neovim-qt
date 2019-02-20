@@ -10,6 +10,9 @@
 #include "mainwindow.h"
 #include "printinfo.h"
 #include "version.h"
+#ifdef __APPLE__
+#include "OSXHideTitleBar.h"
+#endif
 
 namespace NeovimQt {
 
@@ -107,6 +110,7 @@ void App::showUi() noexcept
 
 #ifdef NEOVIMQT_GUI_WIDGET
 	NeovimQt::Shell *win = new NeovimQt::Shell(c);
+
 	win->show();
 	if (m_parser.isSet("fullscreen")) {
 		win->showFullScreen();

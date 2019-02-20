@@ -4,6 +4,9 @@
 #include <QLayout>
 #include <QSettings>
 #include <QToolBar>
+#ifdef __APPLE__
+#include "OSXHideTitleBar.h"
+#endif
 
 namespace NeovimQt {
 
@@ -13,6 +16,7 @@ MainWindow::MainWindow(NeovimConnector *c, ShellOptions opts, QWidget *parent)
 	m_shell_options(opts), m_neovim_requested_close(false)
 {
 	m_errorWidget = new ErrorWidget();
+  /* FrameLess *frameless = new FrameLess(this); */
 	m_stack.addWidget(m_errorWidget);
 	connect(m_errorWidget, &ErrorWidget::reconnectNeovim,
 			this, &MainWindow::reconnectNeovim);
@@ -193,11 +197,14 @@ void MainWindow::neovimWidgetResized()
 
 void MainWindow::neovimMaximized(bool set)
 {
-	if (set) {
-		setWindowState(windowState() | Qt::WindowMaximized);
-	} else {
-		setWindowState(windowState() & ~Qt::WindowMaximized);
-	}
+  //If the window is in full-screen don't edit
+  if (!(windowState() & Qt::WindowFullScreen)) {
+    if (set) {
+      setWindowState(windowState() | Qt::WindowMaximized);
+    } else {
+     setWindowState(windowState() & ~Qt::WindowMaximized);
+    }
+  }
 }
 
 void MainWindow::neovimSuspend()
@@ -213,6 +220,31 @@ void MainWindow::neovimFullScreen(bool set)
 	} else {
 		setWindowState(windowState() & ~Qt::WindowFullScreen);
 	}
+  show();
+}
+
+void MainWindow::neovimFrameless(bool set)
+{
+  QSize w_size = geometry().size();
+
+  if (set) {
+
+#ifdef __APPLE__
+      //Then, hide the OS X title bar
+      OSXHideTitleBar::HideTitleBar(this->winId(), true);
+#endif
+    /* setWindowFlags(windowFlags() | Qt::FramelessWindowHint); */
+    /* w_size.setHeight(w_size.height() + 22); */
+  } else {
+#ifdef __APPLE__
+      //Then, hide the OS X title bar
+      OSXHideTitleBar::HideTitleBar(this->winId(), false);
+#endif
+    /* setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint); */
+    /* w_size.setHeight(w_size.height() - 22); */
+  }
+  /* resize(w_size); */
+  /* show(); */
 }
 
 void MainWindow::neovimGuiCloseRequest()
@@ -288,6 +320,8 @@ void MainWindow::showIfDelayed()
 		}
 	}
 	m_delayedShow = DelayedShow::Disabled;
+  // start borderless
+  OSXHideTitleBar::HideTitleBar(this->winId(), true);
 }
 
 void MainWindow::neovimAttachmentChanged(bool attached)
