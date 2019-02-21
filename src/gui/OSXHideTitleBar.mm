@@ -8,9 +8,11 @@ void OSXHideTitleBar::HideTitleBar(long winid, bool toggle)
 
     if(toggle) {
         [nativeWindow setStyleMask:
-            [nativeWindow styleMask] | NSFullSizeContentViewWindowMask | NSWindowTitleHidden];
+            [nativeWindow styleMask] | NSFullSizeContentViewWindowMask | NSWindowTitleHidden ];
 
         [nativeWindow setTitlebarAppearsTransparent:YES];
+        [nativeWindow setTitleVisibility:NSWindowTitleHidden];
+        /* nativeWindow.titleVisibility = NSWindowTitleHidden; */
         [nativeWindow setMovableByWindowBackground:YES];
 
         NSButton *closeButton = [nativeWindow standardWindowButton:NSWindowCloseButton];
