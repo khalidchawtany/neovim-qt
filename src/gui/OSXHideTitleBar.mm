@@ -21,7 +21,8 @@ void OSXHideTitleBar::HideTitleBar(long winid, bool toggle)
         [zoomButton setHidden:YES];
     } else {
         [nativeWindow setStyleMask:
-            [nativeWindow styleMask]];
+            [nativeWindow styleMask] | NSFullSizeContentViewWindowMask | NSWindowTitleVisible];
+
 
         [nativeWindow setTitlebarAppearsTransparent:false];
         [nativeWindow setMovableByWindowBackground:false];
