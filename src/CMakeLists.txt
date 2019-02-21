@@ -10,7 +10,6 @@ endif()
 
 IF(APPLE)
    #SET(GUI_TYPE MACOSX_BUNDLE)
-
    INCLUDE_DIRECTORIES ( /System/Library/Frameworks/Foundation.framework/Versions/C/Headers)
 
    FIND_LIBRARY(COCOA_LIBRARY Cocoa)

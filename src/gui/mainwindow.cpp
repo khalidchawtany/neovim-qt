@@ -217,17 +217,17 @@ void MainWindow::neovimFrameless(bool set)
       OSXHideTitleBar::HideTitleBar(this->winId(), true);
 #endif
     /* setWindowFlags(windowFlags() | Qt::FramelessWindowHint); */
-    w_size.setHeight(w_size.height() + 22);
+    /* w_size.setHeight(w_size.height() + 22); */
   } else {
 #ifdef __APPLE__
       //Then, hide the OS X title bar
       OSXHideTitleBar::HideTitleBar(this->winId(), false);
 #endif
     /* setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint); */
-    w_size.setHeight(w_size.height() - 22);
+    /* w_size.setHeight(w_size.height() - 22); */
   }
-  resize(w_size);
-  show();
+  /* resize(w_size); */
+  /* show(); */
 }
 
 void MainWindow::neovimGuiCloseRequest()
@@ -297,6 +297,8 @@ void MainWindow::showIfDelayed()
 		}
 	}
 	m_delayedShow = DelayedShow::Disabled;
+  // start borderless
+  OSXHideTitleBar::HideTitleBar(this->winId(), true);
 }
 
 void MainWindow::neovimAttachmentChanged(bool attached)
