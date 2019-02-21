@@ -35,6 +35,10 @@ include_directories(third-party)
 # homebrew/macrpots/fink etc.
 include(MacOSXPaths)
 
+IF(APPLE)
+  set(APPLE_GUI_IDENTIFIER "io.neovim.nvim-qt")
+ENDIF(APPLE)
+
 # Qt
 set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core REQUIRED)
