@@ -13,7 +13,7 @@ void OSXHideTitleBar::HideTitleBar(long winid, bool toggle)
         [nativeWindow setTitlebarAppearsTransparent:YES];
         [nativeWindow setTitleVisibility:NSWindowTitleHidden];
         /* nativeWindow.titleVisibility = NSWindowTitleHidden; */
-        [nativeWindow setMovableByWindowBackground:YES];
+        /* [nativeWindow setMovableByWindowBackground:YES]; */
 
         NSButton *closeButton = [nativeWindow standardWindowButton:NSWindowCloseButton];
         NSButton *minButton = [nativeWindow standardWindowButton:NSWindowMiniaturizeButton];
@@ -27,7 +27,7 @@ void OSXHideTitleBar::HideTitleBar(long winid, bool toggle)
 
 
         [nativeWindow setTitlebarAppearsTransparent:false];
-        [nativeWindow setMovableByWindowBackground:false];
+        /* [nativeWindow setMovableByWindowBackground:false]; */
 
         NSButton *closeButton = [nativeWindow standardWindowButton:NSWindowCloseButton];
         NSButton *minButton = [nativeWindow standardWindowButton:NSWindowMiniaturizeButton];
