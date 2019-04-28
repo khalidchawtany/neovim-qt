@@ -49,11 +49,16 @@ private slots:
 	void neovimIsUnsupported();
 	void neovimShowtablineSet(int);
 	void neovimTablineUpdate(int64_t curtab, QList<Tab> tabs);
+	void neovimShowContextMenu();
+	void neovimSendCut();
+	void neovimSendCopy();
+	void neovimSendPaste();
+	void neovimSendSelectAll();
 	void extTablineSet(bool);
 	void changeTab(int index);
 private:
 	void init(NeovimConnector *);
-        NeovimConnector *m_nvim;
+	NeovimConnector *m_nvim;
 	ErrorWidget *m_errorWidget;
 	QSplitter *m_window;
 	TreeView *m_tree;
@@ -65,6 +70,10 @@ private:
 	ShellOptions m_shell_options;
 	bool m_neovim_requested_close;
   bool is_frameless;
+	QAction *m_actCut;
+	QAction *m_actCopy;
+	QAction *m_actPaste;
+	QAction *m_actSelectAll;
 };
 
 } // Namespace
