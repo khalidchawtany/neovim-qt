@@ -70,6 +70,7 @@ private:
 	ShellOptions m_shell_options;
 	bool m_neovim_requested_close;
   bool is_frameless;
+	QMenu *m_contextMenu;
 	QAction *m_actCut;
 	QAction *m_actCopy;
 	QAction *m_actPaste;

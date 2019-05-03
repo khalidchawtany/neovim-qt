@@ -743,6 +743,8 @@ void Shell::handleNeovimNotification(const QByteArray &name, const QVariantList&
 
 			qDebug() << "Neovim changed clipboard" << data << type << reg_name << clipboard;
 			QGuiApplication::clipboard()->setMimeData(clipData, clipboard);
+		} else if (guiEvName == "ShowContextMenu") {
+			emit neovimShowContextMenu();
 		}
 		return;
 	} else if (name != "redraw") {
@@ -885,19 +887,6 @@ void Shell::keyPressEvent(QKeyEvent *ev)
 void Shell::neovimMouseEvent(QMouseEvent *ev)
 {
 	if (!m_attached || !m_mouseEnabled) {
-		return;
-	}
-
-	static bool isRightButtonDown = false;
-	if (ev->buttons() & Qt::RightButton)
-	{
-		isRightButtonDown = true;
-		return;
-	}
-	else if (isRightButtonDown && ev->type() == QEvent::MouseButtonRelease)
-	{
-		isRightButtonDown = false;
-		emit neovimShowContextMenu();
 		return;
 	}
 
