@@ -108,6 +108,9 @@ QSize ShellWidget::cellSize() const
 void ShellWidget::paintEvent(QPaintEvent *ev)
 {
 	QPainter p(this);
+
+	p.setClipping(true);
+
 	foreach(QRect rect, ev->region().rects()) {
 		int start_row = rect.top() / m_cellSize.height();
 		int end_row = rect.bottom() / m_cellSize.height();
@@ -115,17 +118,60 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 		int end_col = rect.right() / m_cellSize.width();
 
 		// Paint margins
-		if (end_col > m_contents.columns()) {
-			end_col = m_contents.columns();
+		if (end_col >= m_contents.columns()) {
+			end_col = m_contents.columns() - 1;
 		}
-		if (end_row > m_contents.rows()) {
-			end_row = m_contents.rows();
+		if (end_row >= m_contents.rows()) {
+			end_row = m_contents.rows() - 1;
 		}
 
 	if(m_ligatureMode){
 		start_col = 0;
 		end_col = m_contents.columns();
 	}
+		// end_col/row is inclusive
+		for (int i=start_row; i<=end_row; i++) {
+			for (int j=end_col; j>=start_col; j--) {
+
+				const Cell& cell = m_contents.constValue(i,j);
+				int chars = cell.doubleWidth ? 2 : 1;
+				QRect r = absoluteShellRect(i, j, 1, chars);
+				QRect ovflw = absoluteShellRect(i, j, 1, chars + 1);
+
+				p.setClipRegion(ovflw);
+
+				if (j <= 0 || !contents().constValue(i, j-1).doubleWidth) {
+					// Only paint bg/fg if this is not the second cell
+					// of a wide char
+					if (cell.backgroundColor.isValid()) {
+						p.fillRect(r, cell.backgroundColor);
+					} else {
+						p.fillRect(r, m_bgColor);
+					}
+
+					if (cell.c == ' ') {
+						continue;
+					}
+
+					if (cell.foregroundColor.isValid()) {
+						p.setPen(cell.foregroundColor);
+					} else {
+						p.setPen(m_fgColor);
+					}
+
+					if (cell.bold || cell.italic) {
+						QFont f = p.font();
+						f.setBold(cell.bold);
+						f.setItalic(cell.italic);
+						p.setFont(f);
+					} else {
+						p.setFont(font());
+					}
+
+					// Draw chars at the baseline
+					QPoint pos(r.left(), r.top()+m_ascent+(m_lineSpace / 2));
+					p.drawText(pos, QString(cell.c));
+				}
 
 		// end_row is inclusive
 		QChar *rowStr = new QChar[m_contents.columns()];
@@ -206,6 +252,8 @@ void ShellWidget::paintEvent(QPaintEvent *ev)
 		}
 		delete[] rowStr;
 	}
+
+	p.setClipping(false);
 
 	QRect shellArea = absoluteShellRect(0, 0,
 				m_contents.rows(), m_contents.columns());
