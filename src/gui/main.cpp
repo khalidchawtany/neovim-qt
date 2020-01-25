@@ -28,6 +28,8 @@ int ui_main(int argc, char **argv)
 	qputenv("QT_AUTO_SCREEN_SCALE_FACTOR", "1");
 #endif
 
+	qputenv("NVIM_LISTEN_ADDRESS", "/tmp/nvimsocket");
+
 	NeovimQt::App app(argc, argv);
 
 	app.checkArgumentsMayTerminate();
