@@ -13,6 +13,11 @@
 #include "printinfo.h"
 #include "version.h"
 
+#ifdef __APPLE__
+#include "OSXHideTitleBar.h"
+#endif
+ 
+
 namespace NeovimQt {
 
 namespace {

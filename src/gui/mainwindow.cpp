@@ -5,6 +5,9 @@
 #include <QSettings>
 #include <QStyleFactory>
 #include <QToolBar>
+#ifdef __APPLE__
+#include "OSXHideTitleBar.h"
+#endif
 
 namespace NeovimQt {
 
@@ -32,6 +35,9 @@ MainWindow::MainWindow(NeovimConnector* c, QWidget* parent) noexcept
 
 void MainWindow::init(NeovimConnector *c)
 {
+    // start borderless
+    OSXHideTitleBar::HideTitleBar(this->winId(), true);
+
 	if (m_shell) {
 		m_shell->deleteLater();
 		m_stack.removeWidget(m_shell);
@@ -116,6 +122,7 @@ void MainWindow::init(NeovimConnector *c)
 	connect(m_shell, &Shell::colorsChanged,
 			this, &MainWindow::updateAdaptiveColor);
 
+
 	m_shell->setFocus(Qt::OtherFocusReason);
 
 	if (m_nvim->errorCause()) {
@@ -181,6 +188,32 @@ void MainWindow::neovimMaximized(bool set)
 	} else {
 		setWindowState(windowState() & ~Qt::WindowMaximized);
 	}
+}
+
+void MainWindow::neovimFramelessRouned(bool isFrameless)
+{
+	QSize w_size = geometry().size();
+
+	if (isFrameless) {
+
+#ifdef __APPLE__
+		//Then, hide the OS X title bar
+		OSXHideTitleBar::HideTitleBar(this->winId(), true);
+#endif
+		/* setWindowFlags(windowFlags() | Qt::FramelessWindowHint); */
+		/* w_size.setHeight(w_size.height() + 22); */
+	} else {
+#ifdef __APPLE__
+		//Then, hide the OS X title bar
+		OSXHideTitleBar::HideTitleBar(this->winId(), false);
+#endif
+		/* setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint); */
+		/* w_size.setHeight(w_size.height() - 22); */
+	}
+	/* resize(w_size); */
+	show();
+
+	m_nvim->api0()->vim_set_var("GuiWindowFramelessRounded", isFrameless ? 1 : 0);
 }
 
 void MainWindow::neovimFrameless(bool isFrameless)

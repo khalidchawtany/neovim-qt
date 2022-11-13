@@ -45,6 +45,7 @@ private slots:
 	void neovimForeground();
 	void neovimSuspend();
 	void neovimFullScreen(bool);
+    void neovimFramelessRouned(bool);
 	void neovimFrameless(bool);
 	void neovimGuiCloseRequest(int);
 	void neovimExited(int status);
